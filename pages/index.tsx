@@ -1,6 +1,7 @@
 import React from "react";
 import ThemeToggle from "../components/ThemeToggle";
-import PromptBuilder from "../components/PromptBuilder";
+import PromptInput from "../components/PromptInput";
+import PromptBuilder from "@/components/PromptBuilder";
 
 export default function Home() {
     return (
@@ -13,8 +14,11 @@ export default function Home() {
                     <ThemeToggle />
                 </div>
             </div>
-            <div className="flex flex-col items-center justify-center h-full w-full">
+            <div className="flex flex-col items-center justify-around h-full w-full">
                 <PromptBuilder />
+                <div className="w-full flex-col flex md:max-w-md lg:max-w-2xl">
+                    <PromptInput />
+                </div>
             </div>
         </div>
     );
