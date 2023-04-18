@@ -1,15 +1,43 @@
 import React, {
     CSSProperties,
+    useCallback,
     useEffect,
     useMemo,
     useRef,
     useState,
 } from "react";
-import { BsArrowsExpand } from "react-icons/bs";
+import { BsClipboard } from "react-icons/bs";
+import { Button } from "./ui/Button";
+import { useToast } from "@/hooks/useToast";
 
-const PromptInput: React.FC<{}> = ({}) => {
+interface PromptInputProps {
+    currentPrompt: string;
+}
+
+const PromptInput: React.FC<PromptInputProps> = ({ currentPrompt }) => {
     const [inputValue, setInputValue] = useState("");
+    const [disableCopy, setDisableCopy] = useState(false);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const { toast } = useToast();
+
+    const inputStyles = useMemo<CSSProperties>(
+        () => ({ maxHeight: "200px" }),
+        []
+    );
+
+    const handleCopyClick = useCallback(() => {
+        if (textAreaRef && textAreaRef.current) {
+            navigator.clipboard.writeText(inputValue);
+            setDisableCopy(true);
+            const { dismiss } = toast({
+                title: "Copied to clipboard",
+            });
+            setTimeout(() => {
+                setDisableCopy(false);
+                setTimeout(() => dismiss(), 1000);
+            }, 1000);
+        }
+    }, [toast, inputValue]);
 
     useEffect(() => {
         if (textAreaRef.current) {
@@ -18,10 +46,12 @@ const PromptInput: React.FC<{}> = ({}) => {
         }
     }, [inputValue]);
 
-    const inputStyles = useMemo<CSSProperties>(
-        () => ({ maxHeight: "200px" }),
-        []
-    );
+    useEffect(() => {
+        setInputValue(currentPrompt);
+        textAreaRef.current?.scrollTo(0, textAreaRef.current.scrollHeight);
+    }, [currentPrompt]);
+
+    const disabledButton = inputValue === "" || disableCopy;
 
     return (
         <div className="relative mx-6 w-full drop-shadow-lg">
@@ -34,9 +64,14 @@ const PromptInput: React.FC<{}> = ({}) => {
                 placeholder="Type your prompt here..."
                 style={inputStyles}
             />
-            <button className="absolute right-0 bottom-1 px-3 py-2 m-2 dark:text-gray-300 focus:outline-none hover:bg-blend-darken">
-                <BsArrowsExpand size={20} />
-            </button>
+            <div className="absolute right-0 top-2">
+                <Button disabled={disabledButton} onClick={handleCopyClick}>
+                    <BsClipboard
+                        size={20}
+                        color={disabledButton ? "gray" : "black"}
+                    />
+                </Button>
+            </div>
         </div>
     );
 };

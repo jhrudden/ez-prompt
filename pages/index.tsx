@@ -4,6 +4,7 @@ import PromptInput from "../components/PromptInput";
 import PromptBuilder from "@/components/PromptBuilder";
 
 export default function Home() {
+    const [prompt, setPrompt] = React.useState<string>("");
     return (
         <div className="flex flex-col items-center w-full h-screen">
             <div className="flex flex-row items-center justify-between relative p-2 w-full">
@@ -15,9 +16,9 @@ export default function Home() {
                 </div>
             </div>
             <div className="flex flex-col items-center justify-around h-full w-full">
-                <PromptBuilder />
+                <PromptBuilder onPromptGenerated={setPrompt} />
                 <div className="w-full flex-col flex md:max-w-md lg:max-w-2xl">
-                    <PromptInput />
+                    <PromptInput currentPrompt={prompt} />
                 </div>
             </div>
         </div>
