@@ -1,8 +1,70 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
+import { Button } from "./ui/Button";
+import { PROMPT_CATEGORIES, PromptCategory } from "@/types/Prompt";
 
-const PromptBuilder: React.FC<{}> = ({}) => {
+type FormData = Record<PromptCategory, string>;
+
+const CATEGORY_TO_LABEL: Record<PromptCategory, string> = {
+    topic: "Question Topic",
+    role: "ChatGPT Role",
+    tone: "Tone",
+    responseFormat: "Response Format",
+    audience: "Audience",
+    genre: "Genre",
+    requirements: "Requirements",
+    inspiration: "Inspiration",
+};
+
+const CATEGORY_TO_PLACEHOLDER: Record<PromptCategory, string> = {
+    role: "Software Developer",
+    topic: "Web Development",
+    tone: "Casual",
+    responseFormat: "Bullet Points",
+    genre: "Computer Science",
+    audience: "Developers",
+    requirements: "None",
+    inspiration: "React Documentation",
+};
+
+interface PromptBuilderProps {
+    onPromptGenerated: (prompt: string) => void;
+}
+
+const PromptBuilder: React.FC<PromptBuilderProps> = ({ onPromptGenerated }) => {
+    const [formData, setFormData] = React.useState<FormData>({
+        topic: "",
+        role: "",
+        tone: "",
+        responseFormat: "",
+        audience: "",
+        genre: "",
+        requirements: "",
+        inspiration: "",
+    });
+
+    const handleFormFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        setFormData((prev) => ({ ...prev, [id]: value }));
+    };
+
+    const handleFormSubmit = useCallback(
+        (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            let prompt = "";
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value !== "")
+                    prompt += `${
+                        CATEGORY_TO_LABEL[key as PromptCategory]
+                    }: ${value}\n`;
+            });
+            prompt += "Please create a prompt based on the above inputs.";
+            onPromptGenerated(prompt);
+        },
+        [formData, onPromptGenerated]
+    );
+
     return (
         <div className="w-full max-w-xl flex items-center flex-col justify-center shadow-2xl outline outline-1 outline-gray-100 dark:outline-gray-900 rounded px-4 pt-3 pb-5">
             <h1 className="text-xl font-bold mb-1 dark:text-gray-200">
@@ -11,31 +73,31 @@ const PromptBuilder: React.FC<{}> = ({}) => {
             <p className="text-md opacity-50 text-gray-500 dark:text-gray-300 mb-3">
                 Let me help you construct a prompt ...
             </p>
-            <form className="flex w-full">
+            <form
+                className="flex w-full flex-col items-center justify-center"
+                onSubmit={handleFormSubmit}
+            >
                 <div className="grid md:grid-cols-2 w-full items-center gap-3">
-                    <div className="w-full">
-                        <Label htmlFor="questionTopic">Question Topic</Label>
-                        <Input
-                            id="questionTopic"
-                            placeholder="Software Development"
-                        />
-                    </div>
-                    <div className="w-full">
-                        <Label htmlFor="role">ChatGPT Role</Label>
-                        <Input id="role" placeholder="Interviewer" />
-                    </div>
-                    <div className="w-full">
-                        <Label htmlFor="tone">Tone</Label>
-                        <Input id="tone" placeholder="Formal" />
-                    </div>
-                    <div className="w-full">
-                        <Label htmlFor="outputType">Output Type</Label>
-                        <Input
-                            id="outputType"
-                            placeholder="Generate Examples"
-                        />
-                    </div>
+                    {PROMPT_CATEGORIES.map((category) => (
+                        <div
+                            className="w-full"
+                            key={`prompt_category_${category}`}
+                        >
+                            <Label htmlFor={category}>
+                                {CATEGORY_TO_LABEL[category]}
+                            </Label>
+                            <Input
+                                id={category}
+                                placeholder={CATEGORY_TO_PLACEHOLDER[category]}
+                                value={formData[category] ?? ""}
+                                onChange={handleFormFieldChange}
+                            />
+                        </div>
+                    ))}
                 </div>
+                <Button type="submit" variant="outline" className="mt-2 w-full">
+                    Generate
+                </Button>
             </form>
         </div>
     );
