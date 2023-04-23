@@ -34,7 +34,7 @@ const CATEGORY_TO_PLACEHOLDER: Record<PromptCategory, string> = {
 };
 
 const CATEGORY_TO_TOOLTIP: Record<PromptCategory, string> = {
-    topic: "The specific topic or subject that the prompt should focus on. GOAL:The specific goal that the user is trying to achieve",
+    topic: "The specific topic or subject that the prompt should focus on. GOAL: The specific goal that the user is trying to achieve",
     audience:
         "The intended audience of the prompt, including their demographics, interests, and needs",
     role: "The particular persona which helps ChatGPT tailor its responses to fit the characteristics or expertise associated with that role.",
