@@ -1,8 +1,15 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
 import { Button } from "./ui/Button";
 import { PROMPT_CATEGORIES, PromptCategory } from "@/types/Prompt";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "./ui/Tooltip";
+import { BsInfoCircle } from "react-icons/bs";
 
 type FormData = Record<PromptCategory, string>;
 
@@ -24,6 +31,19 @@ const CATEGORY_TO_PLACEHOLDER: Record<PromptCategory, string> = {
     audience: "Developers",
     requirements: "None",
     inspiration: "React Documentation",
+};
+
+const CATEGORY_TO_TOOLTIP: Record<PromptCategory, string> = {
+    topic: "The specific topic or subject that the prompt should focus on. GOAL:The specific goal that the user is trying to achieve",
+    audience:
+        "The intended audience of the prompt, including their demographics, interests, and needs",
+    role: "The particular persona which helps ChatGPT tailor its responses to fit the characteristics or expertise associated with that role.",
+    tone: "The desired tone or mood of the prompt, such as serious, humorous, or informative",
+    format: "The desired format for the prompt, such as a question, scenario, or image",
+    requirements:
+        "Any specific requirements or guidelines for the prompt, such as length or specific elements",
+    inspiration:
+        "Any inspiration or starting points for the prompt, such as a question, quote, or image",
 };
 
 interface PromptBuilderProps {
@@ -80,9 +100,12 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({ onPromptGenerated }) => {
                             className="w-full"
                             key={`prompt_category_${category}`}
                         >
-                            <Label htmlFor={category}>
-                                {CATEGORY_TO_LABEL[category]}
-                            </Label>
+                            <div className="flex flex-row gap-1 mb-1 items-center">
+                                <Label htmlFor={category}>
+                                    {CATEGORY_TO_LABEL[category]}
+                                </Label>
+                                <CategoryTooltip category={category} />
+                            </div>
                             <Input
                                 id={category}
                                 placeholder={CATEGORY_TO_PLACEHOLDER[category]}
@@ -98,5 +121,25 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({ onPromptGenerated }) => {
             </form>
         </div>
     );
+};
+
+const CategoryTooltip: React.FC<{ category: PromptCategory }> = ({
+    category,
+}) => {
+    const tooltipMessage: string = CATEGORY_TO_TOOLTIP[category];
+    return tooltipMessage ? (
+        <TooltipProvider>
+            <Tooltip delayDuration={400}>
+                <TooltipTrigger asChild>
+                    <span className="text-gray-500 dark:text-gray-400">
+                        <BsInfoCircle size={14} />
+                    </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm bg-gray-100 dark:bg-gray-500 border-none">
+                    {CATEGORY_TO_TOOLTIP[category]}
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    ) : null;
 };
 export default PromptBuilder;
