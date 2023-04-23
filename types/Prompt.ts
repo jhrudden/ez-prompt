@@ -3,8 +3,7 @@ export const PROMPT_CATEGORIES = [
     "audience",
     "role",
     "tone",
-    "responseFormat",
-    "genre",
+    "format",
     "requirements",
     "inspiration",
 ] as const;

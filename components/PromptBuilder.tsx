@@ -7,12 +7,11 @@ import { PROMPT_CATEGORIES, PromptCategory } from "@/types/Prompt";
 type FormData = Record<PromptCategory, string>;
 
 const CATEGORY_TO_LABEL: Record<PromptCategory, string> = {
-    topic: "Question Topic",
+    topic: "Goal / Topic",
     role: "ChatGPT Role",
-    tone: "Tone",
-    responseFormat: "Response Format",
+    tone: "Tone / Mood",
+    format: "Format",
     audience: "Audience",
-    genre: "Genre",
     requirements: "Requirements",
     inspiration: "Inspiration",
 };
@@ -21,8 +20,7 @@ const CATEGORY_TO_PLACEHOLDER: Record<PromptCategory, string> = {
     role: "Software Developer",
     topic: "Web Development",
     tone: "Casual",
-    responseFormat: "Bullet Points",
-    genre: "Computer Science",
+    format: "Bullet Points",
     audience: "Developers",
     requirements: "None",
     inspiration: "React Documentation",
@@ -37,9 +35,8 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({ onPromptGenerated }) => {
         topic: "",
         role: "",
         tone: "",
-        responseFormat: "",
+        format: "",
         audience: "",
-        genre: "",
         requirements: "",
         inspiration: "",
     });
@@ -52,15 +49,15 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({ onPromptGenerated }) => {
     const handleFormSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            let prompt = "";
+            let prompt =
+                "Please create a great prompt based on the following inputs.\n";
             Object.entries(formData).forEach(([key, value]) => {
                 if (value !== "")
                     prompt += `${
                         CATEGORY_TO_LABEL[key as PromptCategory]
                     }: ${value}\n`;
             });
-            prompt += "Please create a prompt based on the above inputs.";
-            onPromptGenerated(prompt);
+            prompt += onPromptGenerated(prompt);
         },
         [formData, onPromptGenerated]
     );
