@@ -18,6 +18,12 @@ export default function Home() {
             <div className="flex flex-col items-center justify-around h-full w-full">
                 <PromptBuilder onPromptGenerated={setPrompt} />
                 <div className="w-full flex-col flex md:max-w-md lg:max-w-2xl">
+                    {prompt && (
+                        <div className="text-sm font-semibold mb-3 opacity-75 text-center">
+                            Copy the following into ChatGPT. ChatGPT will
+                            generate a refined prompt that you can then use.
+                        </div>
+                    )}
                     <PromptInput currentPrompt={prompt} />
                 </div>
             </div>
