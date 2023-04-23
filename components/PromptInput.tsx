@@ -54,7 +54,7 @@ const PromptInput: React.FC<PromptInputProps> = ({ currentPrompt }) => {
     const disabledButton = inputValue === "" || disableCopy;
 
     return (
-        <div className="relative mx-6 w-full drop-shadow-lg">
+        <div className="relative px-6 w-full drop-shadow-lg">
             <textarea
                 role="textbox"
                 value={inputValue}
@@ -64,8 +64,12 @@ const PromptInput: React.FC<PromptInputProps> = ({ currentPrompt }) => {
                 placeholder="Type your prompt here..."
                 style={inputStyles}
             />
-            <div className="absolute right-0 top-2">
-                <Button disabled={disabledButton} onClick={handleCopyClick}>
+            <div className="absolute right-6 top-2">
+                <Button
+                    disabled={disabledButton}
+                    onClick={handleCopyClick}
+                    variant="default"
+                >
                     <BsClipboard
                         size={20}
                         color={disabledButton ? "gray" : "black"}

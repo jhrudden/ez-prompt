@@ -92,7 +92,7 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({ onPromptGenerated }) => {
                         </div>
                     ))}
                 </div>
-                <Button type="submit" variant="outline" className="mt-2 w-full">
+                <Button type="submit" variant="outline" className="mt-4 w-full">
                     Generate
                 </Button>
             </form>
