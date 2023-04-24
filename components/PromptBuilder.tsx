@@ -10,6 +10,7 @@ import {
     TooltipTrigger,
 } from "./ui/Tooltip";
 import { BsInfoCircle } from "react-icons/bs";
+import useClickedOutside from "@/hooks/useClickedOutside";
 
 type FormData = Record<PromptCategory, string>;
 
@@ -126,20 +127,30 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({ onPromptGenerated }) => {
 const CategoryTooltip: React.FC<{ category: PromptCategory }> = ({
     category,
 }) => {
+    const [openTooltip, setOpenTooltip] = React.useState(false);
+
+    const ref = useClickedOutside(() => setOpenTooltip(false));
+
     const tooltipMessage: string = CATEGORY_TO_TOOLTIP[category];
+
     return tooltipMessage ? (
-        <TooltipProvider>
-            <Tooltip delayDuration={400}>
-                <TooltipTrigger asChild>
-                    <span className="text-gray-500 dark:text-gray-400">
-                        <BsInfoCircle size={14} />
-                    </span>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-sm bg-gray-100 dark:bg-gray-500 border-none">
-                    {CATEGORY_TO_TOOLTIP[category]}
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
+        <div ref={ref}>
+            <TooltipProvider>
+                <Tooltip open={openTooltip}>
+                    <TooltipTrigger asChild>
+                        <span
+                            className="text-gray-500 dark:text-gray-400"
+                            onClick={() => setOpenTooltip((curr) => !curr)}
+                        >
+                            <BsInfoCircle size={14} />
+                        </span>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-sm bg-gray-100 dark:bg-gray-500 border-none">
+                        {CATEGORY_TO_TOOLTIP[category]}
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        </div>
     ) : null;
 };
 export default PromptBuilder;
